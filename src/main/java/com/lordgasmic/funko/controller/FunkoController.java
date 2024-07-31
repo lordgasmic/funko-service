@@ -17,7 +17,7 @@ public class FunkoController {
         this.service = service;
     }
 
-    @GetMapping("/v1/funkos")
+    @GetMapping("/api/v1/funkos")
     public List<FunkoResponse> getAllFunkos() throws SQLException {
         return service.getAllFunkos();
     }
