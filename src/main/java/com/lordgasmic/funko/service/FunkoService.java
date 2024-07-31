@@ -7,8 +7,13 @@ import com.lordgasmic.funko.config.FunkoConstants;
 import com.lordgasmic.funko.config.FunkoExtraConstants;
 import com.lordgasmic.funko.model.FunkoExtrasResponse;
 import com.lordgasmic.funko.model.FunkoResponse;
+import org.apache.solr.client.solrj.SolrClient;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.Http2SolrClient;
+import org.apache.solr.common.SolrInputDocument;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +27,12 @@ public class FunkoService {
     private static final String REPO_NAME = "FunkoRepository";
 
     private final GSARepository funkoRepository;
+    private final SolrClient client;
 
     public FunkoService() {
         this.funkoRepository = (GSARepository) Nucleus.getInstance().getGenericService(REPO_NAME);
+
+        client = new Http2SolrClient.Builder("http://localhost:8983/solr/funkos").build();
     }
 
     public List<FunkoResponse> getAllFunkos() throws SQLException {
@@ -62,6 +70,21 @@ public class FunkoService {
         }
 
         return new ArrayList<>(funkoMap.values());
+    }
+
+    public void index() throws SQLException, SolrServerException, IOException {
+        List<FunkoResponse> funkos = getAllFunkos();
+
+        for (FunkoResponse funko : funkos) {
+            SolrInputDocument document = new SolrInputDocument();
+            document.addField("title", funko.getTitle());
+            document.addField("fandom", funko.getFandom());
+            document.addField("seriesId", funko.getSeriesId());
+            document.addField("name", funko.getName());
+            client.add(document);
+        }
+
+        client.commit();
     }
 
     private static FunkoResponse convertRepositoryItemToFunkoResponse(RepositoryItem item) {
