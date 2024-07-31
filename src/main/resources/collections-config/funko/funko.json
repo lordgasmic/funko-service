@@ -1,0 +1,38 @@
+{
+  "name": "funko",
+  "tables": [
+    {
+      "name": "funko_vw",
+      "id-column": "id",
+      "id-column-name": "id",
+      "type": "primary",
+      "properties": [
+        {
+          "name": "id",
+          "column": "id",
+          "data-type": "int"
+        },
+        {
+          "name": "title",
+          "column": "title",
+          "data-type": "string"
+        },
+        {
+          "name": "fandom",
+          "column": "fandom",
+          "data-type": "string"
+        },
+        {
+          "name": "seriesId",
+          "column": "series_id",
+          "data-type": "int"
+        },
+        {
+          "name": "name",
+          "column": "name",
+          "data-type": "string"
+        }
+      ]
+    }
+  ]
+}

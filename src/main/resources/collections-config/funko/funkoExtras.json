@@ -1,0 +1,28 @@
+{
+  "name": "funkoExtras",
+  "tables": [
+    {
+      "name": "funko_extras_vw",
+      "id-column": "id",
+      "id-column-name": "id",
+      "type": "primary",
+      "properties": [
+        {
+          "name": "id",
+          "column": "id",
+          "data-type": "int"
+        },
+        {
+          "name": "funkoId",
+          "column": "funko_id",
+          "data-type": "int"
+        },
+        {
+          "name": "text",
+          "column": "text",
+          "data-type": "string"
+        }
+      ]
+    }
+  ]
+}
