@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 public class FunkoController {
@@ -20,5 +21,10 @@ public class FunkoController {
     @GetMapping("/api/v1/funkos")
     public List<FunkoResponse> getAllFunkos() throws SQLException {
         return service.getAllFunkos();
+    }
+
+    @GetMapping("/api/v1/funkos/extras")
+    public List<FunkoResponse> getFunkosExtras() throws ExecutionException, InterruptedException {
+        return service.getAllFunkosWithExtras();
     }
 }

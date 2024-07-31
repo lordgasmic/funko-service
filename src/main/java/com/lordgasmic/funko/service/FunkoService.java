@@ -4,11 +4,17 @@ import com.lordgasmic.collections.Nucleus;
 import com.lordgasmic.collections.repository.GSARepository;
 import com.lordgasmic.collections.repository.RepositoryItem;
 import com.lordgasmic.funko.config.FunkoConstants;
+import com.lordgasmic.funko.config.FunkoExtraConstants;
+import com.lordgasmic.funko.model.FunkoExtrasResponse;
 import com.lordgasmic.funko.model.FunkoResponse;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,8 +32,36 @@ public class FunkoService {
         return items.stream().map(FunkoService::convertRepositoryItemToFunkoResponse).collect(Collectors.toList());
     }
 
-    private List<FunkoResponse> getAllFunkosWithExtras() {
-        throw new UnsupportedOperationException();
+    public List<FunkoResponse> getAllFunkosWithExtras() throws ExecutionException, InterruptedException {
+        CompletableFuture<List<RepositoryItem>> funkoItems = CompletableFuture.supplyAsync(() -> {
+            try {
+                return funkoRepository.getAllRepositoryItems(FunkoConstants.FUNKO_REPOSITORY_ITEM);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        CompletableFuture<List<RepositoryItem>> funkoExtraItems = CompletableFuture.supplyAsync(() -> {
+            try {
+                return funkoRepository.getAllRepositoryItems(FunkoExtraConstants.FUNKO_EXTRAS_REPOSITORY_ITEM);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        CompletableFuture<Void> combinedFutures = CompletableFuture.allOf(funkoItems, funkoExtraItems);
+        combinedFutures.get();
+
+        Map<Integer, FunkoResponse> funkoMap = funkoItems.get().stream().map(FunkoService::convertRepositoryItemToFunkoResponse).map(f -> Map.entry(f.getId(), f)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        List<FunkoExtrasResponse> funkoExtras = funkoExtraItems.get().stream().map(FunkoService::convertRepositoryItemToFunkoExtrasResponse).collect(Collectors.toList());
+
+        for (FunkoExtrasResponse funkoExtra : funkoExtras) {
+            FunkoResponse funko = funkoMap.get(funkoExtra.getFunkoId());
+            if (funko != null) {
+                funko.getExtras().add(funkoExtra);
+                funkoMap.put(funko.getId(), funko);
+            }
+        }
+
+        return new ArrayList<>(funkoMap.values());
     }
 
     private static FunkoResponse convertRepositoryItemToFunkoResponse(RepositoryItem item) {
@@ -40,5 +74,15 @@ public class FunkoService {
         funkoResponse.setName((String) item.getPropertyValue(FunkoConstants.PROP_NAME));
 
         return funkoResponse;
+    }
+
+    private static FunkoExtrasResponse convertRepositoryItemToFunkoExtrasResponse(RepositoryItem item) {
+        FunkoExtrasResponse funkoExtrasResponse = new FunkoExtrasResponse();
+
+        funkoExtrasResponse.setId((Integer) item.getPropertyValue(FunkoExtraConstants.PROP_ID));
+        funkoExtrasResponse.setFunkoId((Integer) item.getPropertyValue(FunkoExtraConstants.PROP_FUNKO_ID));
+        funkoExtrasResponse.setText((String) item.getPropertyValue(FunkoExtraConstants.PROP_TEXT));
+
+        return funkoExtrasResponse;
     }
 }
