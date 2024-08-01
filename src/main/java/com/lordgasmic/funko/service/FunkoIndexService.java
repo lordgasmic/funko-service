@@ -5,9 +5,7 @@ import com.lordgasmic.funko.repository.GSARepositoryAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.Http2SolrClient;
 import org.apache.solr.common.SolrInputDocument;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -18,17 +16,12 @@ import java.util.List;
 @Slf4j
 public class FunkoIndexService {
 
-    @Value("${apache.solr.address}")
-    private String solrAddress;
-
     private final GSARepositoryAdapter repositoryAdapter;
     private final SolrClient client;
 
-    public FunkoIndexService(GSARepositoryAdapter repositoryAdapter) {
+    public FunkoIndexService(GSARepositoryAdapter repositoryAdapter, SolrClient client) {
         this.repositoryAdapter = repositoryAdapter;
-
-        log.info("solr address: " + solrAddress);
-        client = new Http2SolrClient.Builder(solrAddress).build();
+        this.client = client;
     }
 
     public void index() throws SQLException, SolrServerException, IOException {

@@ -1,13 +1,12 @@
 package com.lordgasmic.funko.service;
 
 import com.lordgasmic.funko.model.FunkoResponse;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.Http2SolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -18,13 +17,10 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class FunkoService {
 
-    @Value("${apache.solr.address}")
-    private String solrAddress;
+    private final SolrClient client;
 
-    private final Http2SolrClient client;
-
-    public FunkoService() {
-        client = new Http2SolrClient.Builder(solrAddress).build();
+    public FunkoService(SolrClient client) {
+        this.client = client;
     }
 
     public List<FunkoResponse> getAllFunkos() throws SolrServerException, IOException {
