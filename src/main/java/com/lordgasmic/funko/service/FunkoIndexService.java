@@ -27,7 +27,8 @@ public class FunkoIndexService {
     public void index() throws SQLException, SolrServerException, IOException {
         List<FunkoResponse> funkos = repositoryAdapter.getAllFunkos();
 
-        client.deleteByQuery("*:*");
+//        client.deleteByQuery("*:*");
+
 
         for (FunkoResponse funko : funkos) {
             IndexRequest indexRequest = new IndexRequest();

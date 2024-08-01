@@ -33,7 +33,7 @@ public class FunkoService {
         SolrDocumentList docList = response.getResults();
         for (SolrDocument doc : docList) {
             FunkoResponse funkoResponse = new FunkoResponse();
-            funkoResponse.setId((Integer) doc.getFieldValue("id"));
+            funkoResponse.setId(Integer.parseInt((String) doc.getFieldValue("id")));
             funkoResponse.setTitle((String) doc.getFieldValue("title"));
             funkoResponse.setFandom((String) doc.getFieldValue("fandom"));
             funkoResponse.setSeriesId((Integer) doc.getFieldValue("seriesId"));
