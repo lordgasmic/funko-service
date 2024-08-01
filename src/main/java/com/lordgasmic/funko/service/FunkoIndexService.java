@@ -9,8 +9,8 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @Slf4j
@@ -24,8 +24,8 @@ public class FunkoIndexService {
         this.client = client;
     }
 
-    public void index() throws SQLException, SolrServerException, IOException {
-        List<FunkoResponse> funkos = repositoryAdapter.getAllFunkos();
+    public void index() throws SolrServerException, IOException, ExecutionException, InterruptedException {
+        List<FunkoResponse> funkos = repositoryAdapter.getAllFunkosWithExtras();
 
 //        client.deleteByQuery("*:*");
 

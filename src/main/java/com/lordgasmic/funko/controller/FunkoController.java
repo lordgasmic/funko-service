@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -37,7 +36,7 @@ public class FunkoController {
     }
 
     @PutMapping("/api/v1/funkos")
-    public ResponseEntity<IndexResponse> index() throws SQLException, SolrServerException, IOException {
+    public ResponseEntity<IndexResponse> index() throws SolrServerException, IOException, ExecutionException, InterruptedException {
         indexService.index();
 
         return ResponseEntity.ok(new IndexResponse("success"));
