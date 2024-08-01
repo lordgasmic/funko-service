@@ -41,7 +41,7 @@ public class FunkoIndexService {
             List<SolrInputDocument> extras = new ArrayList<>();
             for (FunkoExtrasResponse funkoExtras : funko.getExtras()) {
                 SolrInputDocument doc = new SolrInputDocument();
-                doc.addField("id", funkoExtras.getId());
+                doc.addField("extraId", funkoExtras.getId());
                 doc.addField("funkoId", funkoExtras.getFunkoId());
                 doc.addField("text", funkoExtras.getText());
                 extras.add(doc);
