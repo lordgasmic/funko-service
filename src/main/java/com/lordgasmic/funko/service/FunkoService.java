@@ -32,7 +32,7 @@ public class FunkoService {
     public FunkoService() {
         this.funkoRepository = (GSARepository) Nucleus.getInstance().getGenericService(REPO_NAME);
 
-        client = new Http2SolrClient.Builder("http://localhost:8983/solr/funkos").build();
+        client = new Http2SolrClient.Builder("http://172.16.0.105:8983/solr/funkos").build();
     }
 
     public List<FunkoResponse> getAllFunkos() throws SQLException {
@@ -59,7 +59,7 @@ public class FunkoService {
         combinedFutures.get();
 
         Map<Integer, FunkoResponse> funkoMap = funkoItems.get().stream().map(FunkoService::convertRepositoryItemToFunkoResponse).map(f -> Map.entry(f.getId(), f)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        List<FunkoExtrasResponse> funkoExtras = funkoExtraItems.get().stream().map(FunkoService::convertRepositoryItemToFunkoExtrasResponse).collect(Collectors.toList());
+        List<FunkoExtrasResponse> funkoExtras = funkoExtraItems.get().stream().map(FunkoService::convertRepositoryItemToFunkoExtrasResponse).toList();
 
         for (FunkoExtrasResponse funkoExtra : funkoExtras) {
             FunkoResponse funko = funkoMap.get(funkoExtra.getFunkoId());
