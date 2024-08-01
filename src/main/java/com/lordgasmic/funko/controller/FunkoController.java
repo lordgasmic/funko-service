@@ -27,7 +27,7 @@ public class FunkoController {
     }
 
     @GetMapping("/api/v1/funkos")
-    public List<FunkoResponse> getAllFunkos() throws SQLException {
+    public List<FunkoResponse> getAllFunkos() throws SolrServerException, IOException {
         return service.getAllFunkos();
     }
 
