@@ -46,7 +46,7 @@ public class FunkoIndexService {
                 doc.addField("text", funkoExtras.getText());
                 extras.add(doc);
             }
-            document.addField("extras", extras);
+            document.setField("extras", extras);
             client.add(document);
         }
 
