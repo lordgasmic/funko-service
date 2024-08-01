@@ -1,6 +1,7 @@
 package com.lordgasmic.funko.controller;
 
 import com.lordgasmic.funko.model.FunkoResponse;
+import com.lordgasmic.funko.model.IndexResponse;
 import com.lordgasmic.funko.service.FunkoService;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +34,9 @@ public class FunkoController {
     }
 
     @PutMapping("/api/v1/funkos")
-    public ResponseEntity<String> index() throws SQLException, SolrServerException, IOException {
+    public ResponseEntity<IndexResponse> index() throws SQLException, SolrServerException, IOException {
         service.index();
 
-        return ResponseEntity.ok("success");
+        return ResponseEntity.ok(new IndexResponse("success"));
     }
 }
