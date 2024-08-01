@@ -1,5 +1,6 @@
 package com.lordgasmic.funko.service;
 
+import com.lordgasmic.funko.model.FunkoExtrasResponse;
 import com.lordgasmic.funko.model.FunkoResponse;
 import com.lordgasmic.funko.repository.GSARepositoryAdapter;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,7 @@ public class FunkoIndexService {
     public void index() throws SolrServerException, IOException, ExecutionException, InterruptedException {
         List<FunkoResponse> funkos = repositoryAdapter.getAllFunkosWithExtras();
 
-//        client.deleteByQuery("*:*");
+        client.deleteByQuery("*:*");
 
         for (FunkoResponse funko : funkos) {
             SolrInputDocument document = new SolrInputDocument();
@@ -36,7 +37,13 @@ public class FunkoIndexService {
             document.addField("fandom", funko.getFandom());
             document.addField("seriesId", funko.getSeriesId());
             document.addField("name", funko.getName());
-            document.addField("extras", funko.getExtras());
+            for (FunkoExtrasResponse funkoExtras : funko.getExtras()) {
+                SolrInputDocument doc = new SolrInputDocument();
+                doc.addField("id", funkoExtras.getId());
+                doc.addField("funkoId", funkoExtras.getFunkoId());
+                doc.addField("text", funkoExtras.getText());
+                document.addChildDocument(doc);
+            }
             client.add(document);
         }
 
