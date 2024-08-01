@@ -2,6 +2,7 @@ package com.lordgasmic.funko.service;
 
 import com.lordgasmic.funko.model.FunkoResponse;
 import com.lordgasmic.funko.repository.GSARepositoryAdapter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.Http2SolrClient;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Service
+@Slf4j
 public class FunkoIndexService {
 
     @Value("${apache.solr.address}")
@@ -25,12 +27,12 @@ public class FunkoIndexService {
     public FunkoIndexService(GSARepositoryAdapter repositoryAdapter) {
         this.repositoryAdapter = repositoryAdapter;
 
+        log.info("solr address: " + solrAddress);
         client = new Http2SolrClient.Builder(solrAddress).build();
     }
 
     public void index() throws SQLException, SolrServerException, IOException {
         List<FunkoResponse> funkos = repositoryAdapter.getAllFunkos();
-
 
         client.deleteByQuery("*:*");
 

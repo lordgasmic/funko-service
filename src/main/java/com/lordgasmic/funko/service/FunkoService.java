@@ -31,7 +31,7 @@ public class FunkoService {
         List<FunkoResponse> funkoResponses = new ArrayList<>();
 
         SolrQuery query = new SolrQuery();
-        query.set("q", "price:599.99");
+        query.set("q", "*:*");
         QueryResponse response = client.query(query);
 
         SolrDocumentList docList = response.getResults();
