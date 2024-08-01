@@ -1,5 +1,6 @@
 package com.lordgasmic.funko.service;
 
+import com.lordgasmic.funko.model.FunkoExtrasResponse;
 import com.lordgasmic.funko.model.FunkoResponse;
 import com.lordgasmic.funko.repository.GSARepositoryAdapter;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import org.apache.solr.common.SolrInputDocument;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -36,15 +38,15 @@ public class FunkoIndexService {
             document.addField("fandom", funko.getFandom());
             document.addField("seriesId", funko.getSeriesId());
             document.addField("name", funko.getName());
-//            List<SolrInputDocument> extras = new ArrayList<>();
-//            for (FunkoExtrasResponse funkoExtras : funko.getExtras()) {
-//                SolrInputDocument doc = new SolrInputDocument();
-//                doc.addField("extraId", funkoExtras.getId());
-//                doc.addField("funkoId", funkoExtras.getFunkoId());
-//                doc.addField("text", funkoExtras.getText());
-//                extras.add(doc);
-//            }
-//            document.setField("extras", extras);
+            List<SolrInputDocument> extras = new ArrayList<>();
+            for (FunkoExtrasResponse funkoExtras : funko.getExtras()) {
+                SolrInputDocument doc = new SolrInputDocument();
+                doc.addField("extraId", funkoExtras.getId());
+                doc.addField("funkoId", funkoExtras.getFunkoId());
+                doc.addField("text", funkoExtras.getText());
+                extras.add(doc);
+            }
+            document.setField("extras", extras);
             client.add(document);
         }
 
