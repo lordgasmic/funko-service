@@ -6,6 +6,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.function.EntityResponse;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -34,7 +35,7 @@ public class FunkoController {
     @PutMapping("/api/v1/funkos")
     public Object index() throws SQLException, SolrServerException, IOException {
         service.index();
-
-        return "success";
+        EntityResponse<String> response = EntityResponse.<String>fromObject("success").status(200).build();
+        return response;
     }
 }
