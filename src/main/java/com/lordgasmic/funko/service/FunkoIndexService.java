@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 public class FunkoIndexService {
 
-    @Value("${apache.solr.address")
+    @Value("${apache.solr.address}")
     private String solrAddress;
 
     private final GSARepositoryAdapter repositoryAdapter;

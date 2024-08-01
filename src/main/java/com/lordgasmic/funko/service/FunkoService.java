@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class FunkoService {
 
-    @Value("${apache.solr.address")
+    @Value("${apache.solr.address}")
     private String solrAddress;
 
     private final Http2SolrClient client;
