@@ -2,6 +2,7 @@ package com.lordgasmic.funko.controller;
 
 import com.lordgasmic.funko.model.FunkoResponse;
 import com.lordgasmic.funko.model.IndexResponse;
+import com.lordgasmic.funko.service.FunkoIndexService;
 import com.lordgasmic.funko.service.FunkoService;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +19,11 @@ import java.util.concurrent.ExecutionException;
 public class FunkoController {
 
     private final FunkoService service;
+    private final FunkoIndexService indexService;
 
-    public FunkoController(FunkoService service) {
+    public FunkoController(FunkoService service, FunkoIndexService indexService) {
         this.service = service;
+        this.indexService = indexService;
     }
 
     @GetMapping("/api/v1/funkos")
@@ -35,7 +38,7 @@ public class FunkoController {
 
     @PutMapping("/api/v1/funkos")
     public ResponseEntity<IndexResponse> index() throws SQLException, SolrServerException, IOException {
-        service.index();
+        indexService.index();
 
         return ResponseEntity.ok(new IndexResponse("success"));
     }
