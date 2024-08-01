@@ -31,8 +31,8 @@ public class FunkoController {
     }
 
     @GetMapping("/api/v1/funkos/extras")
-    public List<FunkoResponse> getFunkosExtras() throws ExecutionException, InterruptedException {
-        return service.getAllFunkosWithExtras();
+    public List<FunkoResponse> getFunkosExtras() {
+        throw new UnsupportedOperationException();
     }
 
     @PutMapping("/api/v1/funkos")

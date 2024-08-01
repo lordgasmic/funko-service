@@ -1,5 +1,6 @@
 package com.lordgasmic.funko.service;
 
+import com.lordgasmic.funko.model.FunkoExtrasResponse;
 import com.lordgasmic.funko.model.FunkoResponse;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @Service
 public class FunkoService {
@@ -38,14 +38,10 @@ public class FunkoService {
             funkoResponse.setFandom((String) doc.getFieldValue("fandom"));
             funkoResponse.setSeriesId((Integer) doc.getFieldValue("seriesId"));
             funkoResponse.setName((String) doc.getFieldValue("name"));
+            funkoResponse.setExtras((List<FunkoExtrasResponse>) doc.getFieldValue("extras"));
             funkoResponses.add(funkoResponse);
         }
 
         return funkoResponses;
-    }
-
-    public List<FunkoResponse> getAllFunkosWithExtras() throws ExecutionException, InterruptedException {
-//        return repositoryAdapter.getAllFunkosWithExtras();
-        throw new UnsupportedOperationException();
     }
 }
