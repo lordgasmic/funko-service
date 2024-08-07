@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -41,6 +42,7 @@ public class FunkoIndexService {
             List<SolrInputDocument> extras = new ArrayList<>();
             for (FunkoExtrasResponse funkoExtras : funko.getExtras()) {
                 SolrInputDocument doc = new SolrInputDocument();
+                doc.addField("id", UUID.randomUUID().toString());
                 doc.addField("extraId", funkoExtras.getId());
                 doc.addField("funkoId", funkoExtras.getFunkoId());
                 doc.addField("text", funkoExtras.getText());
