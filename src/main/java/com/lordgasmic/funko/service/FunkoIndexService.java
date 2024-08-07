@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -39,17 +38,21 @@ public class FunkoIndexService {
             document.addField("fandom", funko.getFandom());
             document.addField("seriesId", funko.getSeriesId());
             document.addField("name", funko.getName());
-            List<SolrInputDocument> extras = new ArrayList<>();
+            List<Integer> extras = new ArrayList<>();
+//            List<SolrInputDocument> extras = new ArrayList<>();
             for (FunkoExtrasResponse funkoExtras : funko.getExtras()) {
-                SolrInputDocument doc = new SolrInputDocument();
-                doc.addField("id", UUID.randomUUID().toString());
-                doc.addField("extraId", funkoExtras.getId());
-                doc.addField("funkoId", funkoExtras.getFunkoId());
-                doc.addField("text", funkoExtras.getText());
-                document.addChildDocument(doc);
+//                SolrInputDocument doc = new SolrInputDocument();
+//                doc.addField("id", UUID.randomUUID().toString());
+//                doc.addField("extraId", funkoExtras.getId());
+//                doc.addField("funkoId", funkoExtras.getFunkoId());
+//                doc.addField("text", funkoExtras.getText());
+//                document.addChildDocument(doc);
 //                extras.add(doc);
+
+
+                extras.add(funkoExtras.getFunkoId());
             }
-//            document.addChildDocument("extras", extras);
+            document.addField("extras", extras);
             client.add(document);
         }
 
