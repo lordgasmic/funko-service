@@ -45,9 +45,9 @@ public class FunkoService {
             funko.setExtras((List<FunkoExtra>) doc.getFieldValue("extras"));
             funkos.add(funko);
         }
-        docList.getStart();
-        docList.getNumFound();
-        funkoResponse.setHasMore(response.get);
+
+        funkoResponse.setStart(docList.getStart());
+        funkoResponse.setNumFound(docList.getNumFound());
         funkoResponse.setFunkos(funkos);
 
         return funkoResponse;

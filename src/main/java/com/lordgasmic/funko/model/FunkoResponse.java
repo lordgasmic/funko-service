@@ -6,6 +6,8 @@ import java.util.List;
 
 @Data
 public class FunkoResponse {
-    private boolean hasMore;
+
+    private long start;
+    private long numFound;
     private List<Funko> funkos;
 }
