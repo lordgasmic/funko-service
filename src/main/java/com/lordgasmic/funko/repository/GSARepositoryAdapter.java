@@ -6,8 +6,8 @@ import com.lordgasmic.collections.repository.GSARepository;
 import com.lordgasmic.collections.repository.RepositoryItem;
 import com.lordgasmic.funko.config.FunkoConstants;
 import com.lordgasmic.funko.config.FunkoExtraConstants;
-import com.lordgasmic.funko.model.FunkoExtrasResponse;
-import com.lordgasmic.funko.model.FunkoResponse;
+import com.lordgasmic.funko.model.Funko;
+import com.lordgasmic.funko.model.FunkoExtra;
 import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
@@ -29,12 +29,12 @@ public class GSARepositoryAdapter {
         funkoRepository = (GSARepository) Nucleus.getInstance().getGenericService(REPO_NAME);
     }
 
-    public List<FunkoResponse> getAllFunkos() throws SQLException {
+    public List<Funko> getAllFunkos() throws SQLException {
         List<RepositoryItem> items = funkoRepository.getAllRepositoryItems(FunkoConstants.FUNKO_REPOSITORY_ITEM);
         return items.stream().map(GSARepositoryAdapter::convertRepositoryItemToFunkoResponse).collect(Collectors.toList());
     }
 
-    public List<FunkoResponse> getAllFunkosWithExtras() throws ExecutionException, InterruptedException {
+    public List<Funko> getAllFunkosWithExtras() throws ExecutionException, InterruptedException {
         CompletableFuture<List<RepositoryItem>> funkoItems = CompletableFuture.supplyAsync(() -> {
             try {
                 return funkoRepository.getAllRepositoryItems(FunkoConstants.FUNKO_REPOSITORY_ITEM);
@@ -52,11 +52,11 @@ public class GSARepositoryAdapter {
         CompletableFuture<Void> combinedFutures = CompletableFuture.allOf(funkoItems, funkoExtraItems);
         combinedFutures.get();
 
-        Map<Integer, FunkoResponse> funkoMap = funkoItems.get().stream().map(GSARepositoryAdapter::convertRepositoryItemToFunkoResponse).map(f -> Map.entry(f.getId(), f)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        List<FunkoExtrasResponse> funkoExtras = funkoExtraItems.get().stream().map(GSARepositoryAdapter::convertRepositoryItemToFunkoExtrasResponse).toList();
+        Map<Integer, Funko> funkoMap = funkoItems.get().stream().map(GSARepositoryAdapter::convertRepositoryItemToFunkoResponse).map(f -> Map.entry(f.getId(), f)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        List<FunkoExtra> funkoExtras = funkoExtraItems.get().stream().map(GSARepositoryAdapter::convertRepositoryItemToFunkoExtrasResponse).toList();
 
-        for (FunkoExtrasResponse funkoExtra : funkoExtras) {
-            FunkoResponse funko = funkoMap.get(funkoExtra.getFunkoId());
+        for (FunkoExtra funkoExtra : funkoExtras) {
+            Funko funko = funkoMap.get(funkoExtra.getFunkoId());
             if (funko != null) {
                 funko.getExtras().add(funkoExtra);
                 funkoMap.put(funko.getId(), funko);
@@ -66,8 +66,8 @@ public class GSARepositoryAdapter {
         return new ArrayList<>(funkoMap.values());
     }
 
-    private static FunkoResponse convertRepositoryItemToFunkoResponse(RepositoryItem item) {
-        FunkoResponse funkoResponse = new FunkoResponse();
+    private static Funko convertRepositoryItemToFunkoResponse(RepositoryItem item) {
+        Funko funkoResponse = new Funko();
 
         funkoResponse.setId((Integer) item.getPropertyValue(FunkoConstants.PROP_ID));
         funkoResponse.setTitle((String) item.getPropertyValue(FunkoConstants.PROP_TITLE));
@@ -78,8 +78,8 @@ public class GSARepositoryAdapter {
         return funkoResponse;
     }
 
-    private static FunkoExtrasResponse convertRepositoryItemToFunkoExtrasResponse(RepositoryItem item) {
-        FunkoExtrasResponse funkoExtrasResponse = new FunkoExtrasResponse();
+    private static FunkoExtra convertRepositoryItemToFunkoExtrasResponse(RepositoryItem item) {
+        FunkoExtra funkoExtrasResponse = new FunkoExtra();
 
         funkoExtrasResponse.setId((Integer) item.getPropertyValue(FunkoExtraConstants.PROP_ID));
         funkoExtrasResponse.setFunkoId((Integer) item.getPropertyValue(FunkoExtraConstants.PROP_FUNKO_ID));

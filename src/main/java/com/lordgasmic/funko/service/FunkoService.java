@@ -1,6 +1,7 @@
 package com.lordgasmic.funko.service;
 
-import com.lordgasmic.funko.model.FunkoExtrasResponse;
+import com.lordgasmic.funko.model.Funko;
+import com.lordgasmic.funko.model.FunkoExtra;
 import com.lordgasmic.funko.model.FunkoResponse;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -23,25 +24,32 @@ public class FunkoService {
         this.client = client;
     }
 
-    public List<FunkoResponse> getAllFunkos() throws SolrServerException, IOException {
-        List<FunkoResponse> funkoResponses = new ArrayList<>();
+    public FunkoResponse getFunkos(int start, int count) throws SolrServerException, IOException {
+        FunkoResponse funkoResponse = new FunkoResponse();
+        List<Funko> funkos = new ArrayList<>();
 
         SolrQuery query = new SolrQuery();
         query.set("q", "*:*");
+        query.setStart(start);
+        query.setRows(count);
         QueryResponse response = client.query(query);
 
         SolrDocumentList docList = response.getResults();
         for (SolrDocument doc : docList) {
-            FunkoResponse funkoResponse = new FunkoResponse();
-            funkoResponse.setId(Integer.parseInt((String) doc.getFieldValue("id")));
-            funkoResponse.setTitle((String) doc.getFieldValue("title"));
-            funkoResponse.setFandom((String) doc.getFieldValue("fandom"));
-            funkoResponse.setSeriesId((Integer) doc.getFieldValue("seriesId"));
-            funkoResponse.setName((String) doc.getFieldValue("name"));
-            funkoResponse.setExtras((List<FunkoExtrasResponse>) doc.getFieldValue("extras"));
-            funkoResponses.add(funkoResponse);
+            Funko funko = new Funko();
+            funko.setId(Integer.parseInt((String) doc.getFieldValue("id")));
+            funko.setTitle((String) doc.getFieldValue("title"));
+            funko.setFandom((String) doc.getFieldValue("fandom"));
+            funko.setSeriesId((Integer) doc.getFieldValue("seriesId"));
+            funko.setName((String) doc.getFieldValue("name"));
+            funko.setExtras((List<FunkoExtra>) doc.getFieldValue("extras"));
+            funkos.add(funko);
         }
+        docList.getStart();
+        docList.getNumFound();
+        funkoResponse.setHasMore(response.get);
+        funkoResponse.setFunkos(funkos);
 
-        return funkoResponses;
+        return funkoResponse;
     }
 }
