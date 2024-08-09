@@ -1,6 +1,7 @@
 package com.lordgasmic.funko.controller;
 
 import com.lordgasmic.funko.model.Funko;
+import com.lordgasmic.funko.model.FunkoResponse;
 import com.lordgasmic.funko.model.IndexResponse;
 import com.lordgasmic.funko.service.FunkoIndexService;
 import com.lordgasmic.funko.service.FunkoService;
@@ -28,7 +29,7 @@ public class FunkoController {
     }
 
     @GetMapping("/api/v1/funkos")
-    public List<Funko> getFunkos(@RequestParam Optional<Integer> start, @RequestParam Optional<Integer> count) throws SolrServerException, IOException {
+    public FunkoResponse getFunkos(@RequestParam Optional<Integer> start, @RequestParam Optional<Integer> count) throws SolrServerException, IOException {
         return service.getFunkos(start.orElse(0), count.orElse(10));
     }
 
