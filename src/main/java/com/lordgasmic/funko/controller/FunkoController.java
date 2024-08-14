@@ -29,8 +29,8 @@ public class FunkoController {
     }
 
     @GetMapping("/api/v1/funkos")
-    public FunkoResponse getFunkos(@RequestParam Optional<Integer> start, @RequestParam Optional<Integer> count) throws SolrServerException, IOException {
-        return service.getFunkos(start.orElse(0), count.orElse(10));
+    public FunkoResponse getFunkos(@RequestParam Integer start, @RequestParam Integer count) throws SolrServerException, IOException {
+        return service.getFunkos(start, count);
     }
 
     @PutMapping("/api/v1/funkos")
