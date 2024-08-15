@@ -70,8 +70,8 @@ public class FunkoService {
 
     private static FunkoExtra extractFromSolrDocument(SolrDocument doc) {
         FunkoExtra extra = new FunkoExtra();
-        extra.setId(Integer.parseInt((String) doc.getFieldValue("extraId")));
-        extra.setFunkoId(Integer.parseInt((String) doc.getFieldValue("funkoId")));
+        extra.setId((Integer) doc.getFieldValue("extraId"));
+        extra.setFunkoId((Integer) doc.getFieldValue("funkoId"));
         extra.setText((String) doc.getFieldValue("text"));
         return extra;
     }
