@@ -29,7 +29,7 @@ public class FunkoService {
         List<Funko> funkos = new ArrayList<>();
 
         SolrQuery query = new SolrQuery();
-        query.set("q", "*:*");
+        query.set("q", "seriesId:[* TO *]");
         query.set("fl", "*,[child]");
         query.setStart(start);
         query.setRows(count);
