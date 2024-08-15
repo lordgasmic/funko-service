@@ -54,10 +54,6 @@ public class FunkoService {
                     funko.getExtras().add(extractFromSolrDocument(childExtras));
                 }
             }
-//            SolrDocument extrasDoc = (SolrDocument) doc.getFieldValue("extras");
-//                System.out.println(doc.getFieldNames());
-//                System.out.println(extrasDoc.getFieldNames());
-//            funko.getExtras().addAll((List<FunkoExtra>) doc.getFieldValue("extras"));
             funkos.add(funko);
         }
 
