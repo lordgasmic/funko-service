@@ -30,6 +30,7 @@ public class FunkoService {
 
         SolrQuery query = new SolrQuery();
         query.set("q", "*:*");
+        query.set("fl", "*,[child]");
         query.setStart(start);
         query.setRows(count);
         QueryResponse response = client.query(query);
