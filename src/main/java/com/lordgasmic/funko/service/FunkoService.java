@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class FunkoService {
@@ -43,10 +44,20 @@ public class FunkoService {
             funko.setFandom((String) doc.getFieldValue("fandom"));
             funko.setSeriesId((Integer) doc.getFieldValue("seriesId"));
             funko.setName((String) doc.getFieldValue("name"));
-            SolrDocument extrasDoc = (SolrDocument) doc.getFieldValue("extras");
-                System.out.println(doc.getFieldNames());
-                System.out.println(extrasDoc.getFieldNames());
-            funko.setExtras((List<FunkoExtra>) doc.getFieldValue("extras"));
+            Object rawExtras = doc.getFieldValue("extras");
+            if (rawExtras != null) {
+                if (rawExtras instanceof List extrasList) {
+                    for (Object extra : extrasList) {
+                        funko.getExtras().add(extractFromSolrDocument((SolrDocument) extra));
+                    }
+                } else if(rawExtras instanceof SolrDocument childExtras) {
+                    funko.getExtras().add(extractFromSolrDocument(childExtras));
+                }
+            }
+//            SolrDocument extrasDoc = (SolrDocument) doc.getFieldValue("extras");
+//                System.out.println(doc.getFieldNames());
+//                System.out.println(extrasDoc.getFieldNames());
+//            funko.getExtras().addAll((List<FunkoExtra>) doc.getFieldValue("extras"));
             funkos.add(funko);
         }
 
@@ -55,5 +66,13 @@ public class FunkoService {
         funkoResponse.setFunkos(funkos);
 
         return funkoResponse;
+    }
+
+    private static FunkoExtra extractFromSolrDocument(SolrDocument doc) {
+        FunkoExtra extra = new FunkoExtra();
+        extra.setId(Integer.parseInt((String) doc.getFieldValue("extraId")));
+        extra.setFunkoId(Integer.parseInt((String) doc.getFieldValue("funkoId")));
+        extra.setText((String) doc.getFieldValue("text"));
+        return extra;
     }
 }
