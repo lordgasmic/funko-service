@@ -44,11 +44,8 @@ public class FunkoService {
             funko.setSeriesId((Integer) doc.getFieldValue("seriesId"));
             funko.setName((String) doc.getFieldValue("name"));
             SolrDocument extrasDoc = (SolrDocument) doc.getFieldValue("extras");
-            for(SolrDocument ed : extrasDoc.getChildDocuments()) {
-                System.out.println(ed.getFieldValue("id"));
-                System.out.println(ed.getFieldValue("funkoId"));
-                System.out.println(ed.getFieldValue("text"));
-            }
+                System.out.println(doc.getFieldNames());
+                System.out.println(extrasDoc.getFieldNames());
             funko.setExtras((List<FunkoExtra>) doc.getFieldValue("extras"));
             funkos.add(funko);
         }
