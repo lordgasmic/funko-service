@@ -101,6 +101,7 @@ public class FunkoIndexService {
 
         //Search for the document
         final SearchResponse<IndexData> searchResponse = client.search(s -> s.index(index), IndexData.class);
+        log.info("search hits size: {}", searchResponse.hits().hits().size());
         for (int i = 0; i < searchResponse.hits().hits().size(); i++) {
             log.info("LGC[SearchResponse]: {}", searchResponse.hits().hits().get(i).source());
         }
