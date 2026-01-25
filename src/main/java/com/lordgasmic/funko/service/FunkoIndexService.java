@@ -18,9 +18,7 @@ import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch.core.IndexRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
-import org.opensearch.client.opensearch.indices.CreateIndexRequest;
-import org.opensearch.client.opensearch.indices.IndexSettings;
-import org.opensearch.client.opensearch.indices.PutIndicesSettingsRequest;
+import org.opensearch.client.opensearch.indices.*;
 import org.opensearch.client.transport.OpenSearchTransport;
 import org.opensearch.client.transport.httpclient5.ApacheHttpClient5TransportBuilder;
 import org.springframework.stereotype.Service;
@@ -84,8 +82,14 @@ public class FunkoIndexService {
         final OpenSearchTransport transport = builder.build();
         final OpenSearchClient client = new OpenSearchClient(transport);
 
-        //Create the index
+        // define index
         final String index = "sample-index";
+
+        // Delete the index
+        DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest.Builder().index(index).build();
+        DeleteIndexResponse deleteIndexResponse = client.indices().delete(deleteIndexRequest);
+
+        //Create the index
         final CreateIndexRequest createIndexRequest = new CreateIndexRequest.Builder().index(index).build();
         client.indices().create(createIndexRequest);
 
@@ -109,8 +113,6 @@ public class FunkoIndexService {
         //Delete the document
 //        client.delete(b -> b.index(index).id("1"));
 
-        // Delete the index
-//        DeleteIndexRequest deleteIndexRequest = new DeleteRequest.Builder().index(index).build();
-//        DeleteIndexResponse deleteIndexResponse = client.indices().delete(deleteIndexRequest);
+
     }
 }
