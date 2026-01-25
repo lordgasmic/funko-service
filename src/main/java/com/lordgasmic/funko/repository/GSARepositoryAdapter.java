@@ -1,6 +1,5 @@
 package com.lordgasmic.funko.repository;
 
-
 import com.lordgasmic.collections.Nucleus;
 import com.lordgasmic.collections.repository.GSARepository;
 import com.lordgasmic.collections.repository.RepositoryItem;
@@ -30,33 +29,33 @@ public class GSARepositoryAdapter {
     }
 
     public List<Funko> getAllFunkos() throws SQLException {
-        List<RepositoryItem> items = funkoRepository.getAllRepositoryItems(FunkoConstants.FUNKO_REPOSITORY_ITEM);
+        final List<RepositoryItem> items = funkoRepository.getAllRepositoryItems(FunkoConstants.FUNKO_REPOSITORY_ITEM);
         return items.stream().map(GSARepositoryAdapter::convertRepositoryItemToFunkoResponse).collect(Collectors.toList());
     }
 
     public List<Funko> getAllFunkosWithExtras() throws ExecutionException, InterruptedException {
-        CompletableFuture<List<RepositoryItem>> funkoItems = CompletableFuture.supplyAsync(() -> {
+        final CompletableFuture<List<RepositoryItem>> funkoItems = CompletableFuture.supplyAsync(() -> {
             try {
                 return funkoRepository.getAllRepositoryItems(FunkoConstants.FUNKO_REPOSITORY_ITEM);
-            } catch (SQLException e) {
+            } catch (final SQLException e) {
                 throw new RuntimeException(e);
             }
         });
-        CompletableFuture<List<RepositoryItem>> funkoExtraItems = CompletableFuture.supplyAsync(() -> {
+        final CompletableFuture<List<RepositoryItem>> funkoExtraItems = CompletableFuture.supplyAsync(() -> {
             try {
                 return funkoRepository.getAllRepositoryItems(FunkoExtraConstants.FUNKO_EXTRAS_REPOSITORY_ITEM);
-            } catch (SQLException e) {
+            } catch (final SQLException e) {
                 throw new RuntimeException(e);
             }
         });
-        CompletableFuture<Void> combinedFutures = CompletableFuture.allOf(funkoItems, funkoExtraItems);
+        final CompletableFuture<Void> combinedFutures = CompletableFuture.allOf(funkoItems, funkoExtraItems);
         combinedFutures.get();
 
-        Map<Integer, Funko> funkoMap = funkoItems.get().stream().map(GSARepositoryAdapter::convertRepositoryItemToFunkoResponse).map(f -> Map.entry(f.getId(), f)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        List<FunkoExtra> funkoExtras = funkoExtraItems.get().stream().map(GSARepositoryAdapter::convertRepositoryItemToFunkoExtrasResponse).toList();
+        final Map<Integer, Funko> funkoMap = funkoItems.get().stream().map(GSARepositoryAdapter::convertRepositoryItemToFunkoResponse).map(f -> Map.entry(f.getId(), f)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        final List<FunkoExtra> funkoExtras = funkoExtraItems.get().stream().map(GSARepositoryAdapter::convertRepositoryItemToFunkoExtrasResponse).toList();
 
-        for (FunkoExtra funkoExtra : funkoExtras) {
-            Funko funko = funkoMap.get(funkoExtra.getFunkoId());
+        for (final FunkoExtra funkoExtra : funkoExtras) {
+            final Funko funko = funkoMap.get(funkoExtra.getFunkoId());
             if (funko != null) {
                 funko.getExtras().add(funkoExtra);
                 funkoMap.put(funko.getId(), funko);
@@ -66,8 +65,8 @@ public class GSARepositoryAdapter {
         return new ArrayList<>(funkoMap.values());
     }
 
-    private static Funko convertRepositoryItemToFunkoResponse(RepositoryItem item) {
-        Funko funkoResponse = new Funko();
+    private static Funko convertRepositoryItemToFunkoResponse(final RepositoryItem item) {
+        final Funko funkoResponse = new Funko();
 
         funkoResponse.setId((Integer) item.getPropertyValue(FunkoConstants.PROP_ID));
         funkoResponse.setTitle((String) item.getPropertyValue(FunkoConstants.PROP_TITLE));
@@ -78,8 +77,8 @@ public class GSARepositoryAdapter {
         return funkoResponse;
     }
 
-    private static FunkoExtra convertRepositoryItemToFunkoExtrasResponse(RepositoryItem item) {
-        FunkoExtra funkoExtrasResponse = new FunkoExtra();
+    private static FunkoExtra convertRepositoryItemToFunkoExtrasResponse(final RepositoryItem item) {
+        final FunkoExtra funkoExtrasResponse = new FunkoExtra();
 
         funkoExtrasResponse.setId((Integer) item.getPropertyValue(FunkoExtraConstants.PROP_ID));
         funkoExtrasResponse.setFunkoId((Integer) item.getPropertyValue(FunkoExtraConstants.PROP_FUNKO_ID));

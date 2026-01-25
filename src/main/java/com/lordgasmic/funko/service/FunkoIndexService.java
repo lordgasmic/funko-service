@@ -48,7 +48,7 @@ public class FunkoIndexService {
         final List<Funko> funkos = repositoryAdapter.getAllFunkosWithExtras();
 
 
-        final HttpHost host = new HttpHost("https", "localhost", 9200);
+        final HttpHost host = new HttpHost("https", "172.16.0.133", 9200);
         final BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         // Only for demo purposes. Don't specify your credentials in code.
         credentialsProvider.setCredentials(new AuthScope(host), new UsernamePasswordCredentials("admin", "admin".toCharArray()));

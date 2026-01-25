@@ -29,7 +29,8 @@ public class FunkoController {
 
     @GetMapping("/api/v1/funkos")
     public FunkoResponse getFunkos(@RequestParam final Integer start, @RequestParam final Integer count) throws IOException {
-        return service.getFunkos(start, count);
+//        return service.getFunkos(start, count);
+        return null;
     }
 
     @PutMapping("/api/v1/funkos")
