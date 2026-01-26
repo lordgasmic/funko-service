@@ -1,9 +1,8 @@
 package com.lordgasmic.funko.service;
 
-import com.lordgasmic.funko.model.IndexData;
+import com.lordgasmic.funko.model.Funko;
 import lombok.extern.slf4j.Slf4j;
 import org.opensearch.client.opensearch.OpenSearchClient;
-import org.opensearch.client.opensearch.core.IndexRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +23,8 @@ public class FunkoService {
     public void search() throws IOException {
         //Search for the document
         log.info("search");
-        final SearchResponse<IndexData> searchResponse = client.search(s -> s.index(INDEX_NAME), IndexData.class);
+        final SearchResponse<Funko> searchResponse = client.search(s -> s.index(INDEX_NAME), Funko.class);
+        log.info("search total hits: {}", searchResponse.hits().total().value());
         log.info("search hits size: {}", searchResponse.hits().hits().size());
         for (int i = 0; i < searchResponse.hits().hits().size(); i++) {
             log.info("LGC[SearchResponse]: {}", searchResponse.hits().hits().get(i).source());
@@ -32,8 +32,9 @@ public class FunkoService {
     }
 
     public void add() throws IOException {
-        final IndexData indexData = new IndexData("first_name", "Derp");
-        final IndexRequest<IndexData> indexRequest = new IndexRequest.Builder<IndexData>().index(INDEX_NAME).document(indexData).build();
-        client.index(indexRequest);
+//        final Funko indexData = new Funko("first_name", "Derp");
+//        final IndexRequest<Funko> indexRequest = new IndexRequest.Builder<Funko>().index(INDEX_NAME).document(indexData).build();
+//        client.index(indexRequest);
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 }

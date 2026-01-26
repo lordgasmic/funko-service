@@ -1,14 +1,12 @@
 package com.lordgasmic.funko.service;
 
 import com.lordgasmic.funko.model.Funko;
-import com.lordgasmic.funko.model.IndexData;
 import com.lordgasmic.funko.repository.GSARepositoryAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch._types.Refresh;
 import org.opensearch.client.opensearch.core.BulkRequest;
 import org.opensearch.client.opensearch.core.BulkResponse;
-import org.opensearch.client.opensearch.core.IndexRequest;
 import org.opensearch.client.opensearch.core.bulk.BulkOperation;
 import org.opensearch.client.opensearch.core.bulk.IndexOperation;
 import org.opensearch.client.opensearch.indices.*;
@@ -55,17 +53,10 @@ public class FunkoIndexService {
 
         //Index some data
         log.info("data");
-        final IndexData indexData = new IndexData("first_name", "Bruce");
-        final IndexRequest<IndexData> indexRequest = new IndexRequest.Builder<IndexData>().index(INDEX_NAME).id("1").document(indexData).build();
-        client.index(indexRequest);
-
         final List<BulkOperation> ops = new ArrayList<>();
-
-        for (int i = 0; i < 10_000; i++) {
-            final IndexData doc1 = new IndexData("Document " + i, "The text of document " + i);
-            final String id = "id" + i;
+        for (final Funko funko : funkos) {
             ops.add(new BulkOperation.Builder().index(
-                    IndexOperation.of(io -> io.index(INDEX_NAME).id(id).document(doc1))
+                    IndexOperation.of(io -> io.index(INDEX_NAME).id(Integer.valueOf(funko.getId()).toString()).document(funko))
             ).build());
         }
 
