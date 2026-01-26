@@ -3,6 +3,7 @@ package com.lordgasmic.funko.service;
 import com.lordgasmic.funko.model.IndexData;
 import lombok.extern.slf4j.Slf4j;
 import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch.core.IndexRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
 import org.springframework.stereotype.Service;
 
@@ -28,5 +29,11 @@ public class FunkoService {
         for (int i = 0; i < searchResponse.hits().hits().size(); i++) {
             log.info("LGC[SearchResponse]: {}", searchResponse.hits().hits().get(i).source());
         }
+    }
+
+    public void add() throws IOException {
+        final IndexData indexData = new IndexData("first_name", "Derp");
+        final IndexRequest<IndexData> indexRequest = new IndexRequest.Builder<IndexData>().index(INDEX_NAME).document(indexData).build();
+        client.index(indexRequest);
     }
 }

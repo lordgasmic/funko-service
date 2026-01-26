@@ -6,6 +6,7 @@ import com.lordgasmic.funko.service.FunkoIndexService;
 import com.lordgasmic.funko.service.FunkoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,9 +29,14 @@ public class FunkoController {
 
     @GetMapping("/api/v1/funkos")
     public FunkoResponse getFunkos() throws IOException {
-//        return service.getFunkos(start, count);
         service.search();
         return null;
+    }
+
+    @PostMapping("/api/v1/funkos")
+    public ResponseEntity<Void> addEntity() throws IOException {
+        service.add();
+        return ResponseEntity.accepted().build();
     }
 
     @PutMapping("/api/v1/funkos")
