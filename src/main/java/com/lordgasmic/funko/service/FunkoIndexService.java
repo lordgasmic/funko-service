@@ -4,6 +4,7 @@ import com.lordgasmic.funko.model.Funko;
 import com.lordgasmic.funko.repository.GSARepositoryAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.opensearch.client.opensearch._types.Refresh;
 import org.opensearch.client.opensearch.core.BulkRequest;
 import org.opensearch.client.opensearch.core.BulkResponse;
@@ -36,9 +37,18 @@ public class FunkoIndexService {
 
         // Delete the index
         log.info("delete");
-        final DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest.Builder().index(INDEX_NAME).build();
-        final DeleteIndexResponse deleteIndexResponse = client.indices().delete(deleteIndexRequest);
-        log.info("delete response: {}", deleteIndexResponse.toJsonString());
+        try {
+            final DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest.Builder().index(INDEX_NAME).build();
+            final DeleteIndexResponse deleteIndexResponse = client.indices().delete(deleteIndexRequest);
+            log.info("delete response: {}", deleteIndexResponse.toJsonString());
+        } catch (final OpenSearchException e) {
+            if (e.getMessage().contains("index_not_found_exception")) {
+                log.warn("Unable to find index: {}", INDEX_NAME);
+            } else {
+                throw new RuntimeException(e);
+            }
+        }
+
 
         //Create the index
         log.info("create");
