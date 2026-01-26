@@ -86,8 +86,8 @@ public class FunkoIndexService {
         final String index = "sample-index";
 
         // Delete the index
-        DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest.Builder().index(index).build();
-        DeleteIndexResponse deleteIndexResponse = client.indices().delete(deleteIndexRequest);
+        final DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest.Builder().index(index).build();
+        final DeleteIndexResponse deleteIndexResponse = client.indices().delete(deleteIndexRequest);
 
         //Create the index
         final CreateIndexRequest createIndexRequest = new CreateIndexRequest.Builder().index(index).build();
@@ -102,6 +102,9 @@ public class FunkoIndexService {
         final IndexData indexData = new IndexData("first_name", "Bruce");
         final IndexRequest<IndexData> indexRequest = new IndexRequest.Builder<IndexData>().index(index).id("1").document(indexData).build();
         client.index(indexRequest);
+
+        // todo delete me
+        Thread.sleep(100);
 
         //Search for the document
         final SearchResponse<IndexData> searchResponse = client.search(s -> s.index(index), IndexData.class);
