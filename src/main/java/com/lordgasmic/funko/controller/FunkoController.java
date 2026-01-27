@@ -1,48 +1,48 @@
 package com.lordgasmic.funko.controller;
 
+import com.lordgasmic.funko.model.Funko;
+import com.lordgasmic.funko.model.FunkoRequest;
 import com.lordgasmic.funko.model.FunkoResponse;
-import com.lordgasmic.funko.model.IndexResponse;
-import com.lordgasmic.funko.service.FunkoIndexService;
+import com.lordgasmic.funko.model.FunkosResponse;
 import com.lordgasmic.funko.service.FunkoService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.util.concurrent.ExecutionException;
+import java.util.Optional;
 
 @RestController
 public class FunkoController {
 
     private final FunkoService service;
-    private final FunkoIndexService indexService;
 
-    public FunkoController(final FunkoService service, final FunkoIndexService indexService) {
+    public FunkoController(final FunkoService service) {
         this.service = service;
-        this.indexService = indexService;
     }
 
     @GetMapping("/api/v1/funkos")
-    public FunkoResponse getFunkos() throws IOException {
-        service.search();
-        return null;
+    public ResponseEntity<FunkosResponse> getFunkos(@RequestParam final Optional<Integer> from, @RequestParam final Optional<Integer> size) throws IOException {
+        return ResponseEntity.ok(service.findAll(from.orElse(0), size.orElse(10)));
+    }
+
+    @GetMapping("/api/v1/funkos/{id}")
+    public ResponseEntity<FunkoResponse> getFunko(@RequestParam final String id) throws IOException {
+        final Funko funko = service.search(id);
+
+        return ResponseEntity.ok(FunkoResponse.builder().funko(funko).build());
     }
 
     @PostMapping("/api/v1/funkos")
-    public ResponseEntity<Void> addEntity() throws IOException {
-        service.add();
+    public ResponseEntity<Void> addEntity(@RequestBody final FunkoRequest request) throws IOException {
+        service.add(request);
+
         return ResponseEntity.accepted().build();
     }
 
     @PutMapping("/api/v1/funkos")
-    public ResponseEntity<IndexResponse> index() throws IOException, ExecutionException, InterruptedException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        indexService.index();
+    public ResponseEntity<Void> index() throws IOException {
+        service.index();
 
-        return ResponseEntity.ok(new IndexResponse("success"));
+        return ResponseEntity.accepted().build();
     }
 }

@@ -1,10 +1,12 @@
 package com.lordgasmic.funko.model;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class FunkoExtra {
-    private int id;
-    private int funkoId;
+    private long id;
+    private long funkoId;
     private String text;
 }
