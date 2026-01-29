@@ -4,6 +4,8 @@ import com.lordgasmic.funko.entities.FunkoEntity;
 import com.lordgasmic.funko.model.Funko;
 import com.lordgasmic.funko.model.FunkoRequest;
 
+import java.util.ArrayList;
+
 public final class FunkoMapper {
 
     private FunkoMapper() {
@@ -17,11 +19,12 @@ public final class FunkoMapper {
                 .fandom(entity.getFandom())
                 .seriesId(entity.getSeriesId())
                 .name(entity.getName())
+                .extras(new ArrayList<>())
                 .build();
     }
 
-    public static FunkoEntity toEntity(FunkoRequest request) {
-        FunkoEntity entity = new FunkoEntity();
+    public static FunkoEntity toEntity(final FunkoRequest request) {
+        final FunkoEntity entity = new FunkoEntity();
 
         entity.setTitle(request.getTitle());
         entity.setFandom(request.getFandom());
