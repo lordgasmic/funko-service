@@ -12,12 +12,10 @@ import com.lordgasmic.funko.repository.FunkoExtrasRepository;
 import com.lordgasmic.funko.repository.FunkoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.opensearch.client.opensearch.OpenSearchClient;
-import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.opensearch.client.opensearch._types.Refresh;
 import org.opensearch.client.opensearch.core.*;
 import org.opensearch.client.opensearch.core.bulk.BulkOperation;
 import org.opensearch.client.opensearch.core.bulk.IndexOperation;
-import org.opensearch.client.opensearch.indices.*;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -58,31 +56,6 @@ public class FunkoService {
         }
 
         final List<Funko> funkos = new ArrayList<>(funkoMap.values());
-
-        // Delete the index
-        log.info("delete");
-        try {
-            final DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest.Builder().index(INDEX_NAME).build();
-            final DeleteIndexResponse deleteIndexResponse = client.indices().delete(deleteIndexRequest);
-            log.info("delete response: {}", deleteIndexResponse.toJsonString());
-        } catch (final OpenSearchException e) {
-            if (e.getMessage().contains("index_not_found_exception")) {
-                log.warn("Unable to find index: {}", INDEX_NAME);
-            } else {
-                throw new RuntimeException(e);
-            }
-        }
-
-        //Create the index
-        log.info("create");
-        final CreateIndexRequest createIndexRequest = new CreateIndexRequest.Builder().index(INDEX_NAME).build();
-        client.indices().create(createIndexRequest);
-
-        //Add some settings to the index
-        log.info("settings");
-        final IndexSettings indexSettings = new IndexSettings.Builder().autoExpandReplicas("0-all").build();
-        final PutIndicesSettingsRequest putSettingsRequest = new PutIndicesSettingsRequest.Builder().index(INDEX_NAME).settings(indexSettings).build();
-        client.indices().putSettings(putSettingsRequest);
 
         //Index some data
         log.info("data");
