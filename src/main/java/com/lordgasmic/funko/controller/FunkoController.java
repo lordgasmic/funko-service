@@ -26,7 +26,7 @@ public class FunkoController {
     }
 
     @GetMapping("/api/v1/funkos/{id}")
-    public ResponseEntity<FunkoResponse> getFunko(@RequestParam final String id) throws IOException {
+    public ResponseEntity<FunkoResponse> getFunko(@PathVariable final String id) throws IOException {
         final Funko funko = service.search(id);
 
         return ResponseEntity.ok(FunkoResponse.builder().funko(funko).build());

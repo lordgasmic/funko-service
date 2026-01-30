@@ -1,0 +1,39 @@
+PUT _ingest/pipeline/normalize-text-pipeline
+{
+  "description": "Normalize text fields to lowercase",
+  "processors": [
+    {
+      "lowercase": {
+        "field": "title"
+      }
+    },
+    {
+      "lowercase": {
+        "field": "fandom"
+      }
+    }
+  ]
+}
+
+PUT /funko-index
+{
+  "mappings": {
+    "properties": {
+      "extras": {
+        "properties": {
+          "id": {"type": "long"},
+          "funkoId":{"type": "long"},
+          "text":{ "type": "text" }
+        }
+      },
+      "id": {"type": "long"},
+      "title":{"type": "keyword"},
+      "fandom":{ "type": "keyword" },
+      "seriesId":{ "type": "long" },
+      "name":{ "type": "text" }
+    }
+  },
+  "settings": {
+    "default_pipeline": "normalize-text-pipeline"
+  }
+}
