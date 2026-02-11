@@ -13,6 +13,8 @@ import com.lordgasmic.funko.repository.FunkoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch._types.Refresh;
+import org.opensearch.client.opensearch._types.aggregations.Aggregation;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.*;
 import org.opensearch.client.opensearch.core.bulk.BulkOperation;
 import org.opensearch.client.opensearch.core.bulk.IndexOperation;
@@ -76,12 +78,34 @@ public class FunkoService {
     public FunkosResponse findAll(final int from, final int size) throws IOException {
         final FunkosResponse response = FunkosResponse.builder().from(from).size(size).funkos(new ArrayList<>()).build();
 
-        final SearchResponse<Funko> searchResponse = client.search(s -> s.index(INDEX_NAME).from(from).size(size), Funko.class);
+        final Query searchQuery = Query.of(q -> q.matchAll(m -> m));
+
+        final Aggregation titleFacets = Aggregation.of(a -> a
+                .terms(t -> t
+                        .field("title")
+                        .size(5)));
+
+        final Aggregation fandomFacets = Aggregation.of(a -> a
+                .terms(t -> t
+                        .field("fandom")
+                        .size(5)));
+
+        final SearchRequest searchRequest = SearchRequest.of(s -> s
+                .index(INDEX_NAME)
+                .query(searchQuery)
+                .aggregations("titles", titleFacets)
+                .aggregations("fandoms", fandomFacets)
+        );
+
+        final SearchResponse<Funko> searchResponse = client.search(searchRequest, Funko.class);
         response.setNumFound(searchResponse.hits().total().value());
         for (int i = 0; i < searchResponse.hits().hits().size(); i++) {
             log.info("LGC[SearchResponse]: {}", searchResponse.hits().hits().get(i).source());
             response.getFunkos().add(searchResponse.hits().hits().get(i).source());
         }
+//        for(Map.Entry<String, Aggregate> entry: searchResponse.aggregations().entrySet()){
+//
+//        }
 
         return response;
     }
