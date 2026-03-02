@@ -34,6 +34,18 @@ PUT /funko-index
     }
   },
   "settings": {
+    "analysis": {
+      "analyzer": {
+        "my_stemmer_analyzer": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "porter_stem"
+          ]
+        }
+      }
+    }, 
     "default_pipeline": "normalize-text-pipeline"
   }
 }
